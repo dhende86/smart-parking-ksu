@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# ML model weights (download automatically on first run)
+*.pt
+*.pth
+*.onnx
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Runtime data
+backend/data/status.json
+backend/data/reference.jpg
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
