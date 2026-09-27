@@ -1,12 +1,39 @@
-# KSU Parking System
+# Smart Parking KSU
 
-Real-time parking lot occupancy tracker built for KSU. Point it at a camera feed and it shows you which spots are open or taken using YOLOv8 object detection.
+**Regional winner and national finalist, Bank of America Code-a-Thon 2026.**
+
+Real time parking lot occupancy for Kennesaw State. Point it at a camera feed and it shows which spots are open or taken, live, using YOLOv8 object detection and ByteTrack tracking.
+
+<!-- Demo GIF: record the dashboard with spots turning red/green, save as docs/demo.gif, then uncomment:
+![Smart Parking dashboard demo](docs/demo.gif)
+-->
+
+## How it works
+
+```
+Camera feed (RTSP / IP camera / YouTube)
+        │
+        ▼
+YOLOv8 vehicle detection  ──►  ByteTrack IDs (cars keep the same ID across frames)
+        │
+        ▼
+Spot matching: car box vs. spot polygon overlap
+        │   a spot only flips after 3 frames in a row agree (no flicker)
+        ▼
+FastAPI backend  ──►  Server Sent Events (/stream)  ──►  React dashboard
+```
+
+- **Detection:** YOLOv8 finds cars, motorcycles, buses and trucks in each frame.
+- **Tracking:** ByteTrack gives each car a stable ID, wrapped in a permanent ID so a car that is hidden for a few frames keeps its spot.
+- **Multi frame confirmation:** a spot changes status only after 3 consecutive frames agree, and a taken spot is released only after the car has been gone for a set time.
+- **Live updates:** the backend pushes occupancy changes over Server Sent Events, so the dashboard updates without refreshing. The annotated video is streamed as MJPEG.
+- **Polygon editor:** draw each parking spot once on a still frame; coordinates are stored normalized, so they work at any video resolution.
 
 ## Stack
 
-- **Backend:** Python, FastAPI, OpenCV, YOLOv8
+- **Backend:** Python, FastAPI, OpenCV, YOLOv8 (Ultralytics), ByteTrack
 - **Frontend:** React + Vite
-- **Video:** supports RTSP, IP cameras, and YouTube URLs
+- **Video:** RTSP, IP cameras, and YouTube URLs
 
 ## Setup
 
